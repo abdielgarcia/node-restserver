@@ -2,18 +2,19 @@ const express = require('express');
 
 //paquete de encriptacion de una sola via
 const bcrypt = require('bcrypt');
-
 const _ = require('underscore');
-const Usuario = require('../models/usuario');
-const app = express();
+const Usuario = require('../models/usuario.js');
 
+const { verificaToken, validarRoleAdmin } = require('../middlewares/autenticacion.js')
+
+const app = express();
 
 
 /**
  * Metodo para listar usuario de forma paginada, le indico un desde y un limite
  * 
  */
-app.get('/usuario', function(req, res) {
+app.get('/usuario', [verificaToken], function(req, res) {
 
     let desde = req.query.desde || 0;
     desde = Number(desde);
@@ -25,7 +26,6 @@ app.get('/usuario', function(req, res) {
         .skip(desde)
         .limit(limite)
         .exec((err, usuarios) => {
-
 
             if (err) {
                 return res.status(400).json({
@@ -50,7 +50,7 @@ app.get('/usuario', function(req, res) {
 /**
  * Asi puedo accesder a los parametro senviados en un post
  *  * */
-app.post('/usuario', function(req, res) {
+app.post('/usuario', [verificaToken, validarRoleAdmin], function(req, res) {
 
     let body = req.body;
 
@@ -98,7 +98,7 @@ app.post('/usuario', function(req, res) {
 
 
 
-app.put('/usuario/:id', function(req, res) {
+app.put('/usuario/:id', [verificaToken, validarRoleAdmin], function(req, res) {
 
     let id = req.params.id;
     console.log(id);
@@ -140,7 +140,7 @@ app.put('/usuario/:id', function(req, res) {
  * Metodo que elimina usuario por id
  * 
  */
-app.delete('/usuario/:id', function(req, res) {
+app.delete('/usuario/:id', [verificaToken, validarRoleAdmin], function(req, res) {
 
     let id = req.params.id;
     console.log(id);

@@ -1,5 +1,6 @@
-require('./config/config'); //en esta ruta esta configurado el puerto
 const express = require('express');
+require('./config/config'); //en esta ruta esta configurado el puerto
+
 const mongoose = require('mongoose');
 const app = express()
 const bodyParser = require('body-parser')
@@ -11,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json());
 
-app.use(require('./controller/usuario'));
+app.use(require('./controller/index.js'));
 
 app.listen(process.env.PORT, () => {
     console.log('Escuchando puerto', process.env.PORT);
